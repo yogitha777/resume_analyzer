@@ -1,0 +1,40 @@
+flowchart TD
+    subgraph UI ["1. Presentation Layer (Streamlit Web App)"]
+        App["app.py (ResumeIQ UI)"]
+        Tabs["4 Navigation Tabs:\n1. Resume Overview\n2. Skills Analysis\n3. Career Roadmap\n4. AI Career Advisor"]
+    end
+
+    subgraph Ingestion ["2. Ingestion & In-Memory Parsing"]
+        Uploader["File Uploader (PDF / DOCX <= 5MB)"]
+        Parser["resume_parser.py (PyPDF / Python-Docx)"]
+        Cleaner["text_cleaner.py (C++/C#/.NET Protection)"]
+    end
+
+    subgraph Extraction ["3. Skill & Role Matching Engine"]
+        Extractor["skill_extractor.py"]
+        SkillDict[("data/skill_dictionary.csv")]
+        Matcher["job_matcher.py (TF-IDF + Cosine Similarity)"]
+        JobRoles[("data/job_roles.csv")]
+    end
+
+    subgraph Analytics ["4. Gap Analysis & Guidance"]
+        GapEngine["roadmap_generator.py (Gap Analysis)"]
+        RoadmapEngine["4-Week Actionable Roadmap"]
+        GeminiAdvisor["ai_feedback.py (Optional Gemini LLM)"]
+    end
+
+    subgraph Export ["5. Reporting & Output"]
+        GaugeChart["Match Gauge & Bar Charts"]
+        CategoryDonut["Skill Distribution Chart"]
+        TxtReport["Downloadable Summary Report (.txt)"]
+    end
+
+    Uploader --> Parser --> Cleaner
+    Cleaner --> Extractor & Matcher
+    SkillDict --> Extractor
+    JobRoles --> Matcher
+    Extractor --> GapEngine
+    Matcher --> GapEngine
+    GapEngine --> RoadmapEngine & GeminiAdvisor
+    RoadmapEngine & GeminiAdvisor --> Tabs
+    Tabs --> GaugeChart & CategoryDonut & TxtReport
